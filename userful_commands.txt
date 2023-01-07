@@ -37,3 +37,4 @@ PowerShell Set-MpPreference -SubmitSamplesConsent 2 (disable automatic send samp
 #1 $cred=New-Object System.Management.Automation.PSCredential("domain.local\username",$pass)
 #2 Invoke-Command -Computer DC-1 -Credential $cred -ScriptBlock { whoami }
 
+swaks --to support@domain.local --from "test@test.com" --header "Subject: Internal web app" --body "http://10.10.14.99:8000/" (Send email with swaks)
